@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: Naga Bums Mich
+## Notes: Naga Bums Mich Gilden Addon
+## Version: 0.1
+
+nbm.lua
