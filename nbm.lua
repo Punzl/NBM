@@ -9,6 +9,7 @@ local function Print(msg)
   DEFAULT_CHAT_FRAME:AddMessage("|cff00ff96HelloWorld:|r "..tostring(msg))
 end
 
+
 -- Fensterbau
 local frame
 local function BuildFrame()
@@ -20,13 +21,24 @@ local function BuildFrame()
     frame = CreateFrame("Frame", "HelloWorldFrame", UIParent)
     frame:SetSize(400, 300)
     frame:SetPoint("CENTER")
+    frame:SetMovable(true)
+    frame:EnableMouse(true)
+    frame:SetClampedToScreen(true)
+    frame:RegisterForDrag("LeftButton")
+    frame:SetScript("OnDragStart", function(self) self:StartMoving() end)
+    frame:SetScript("OnDragStop",  function(self) self:StopMovingOrSizing() end)
     frame:SetBackdrop({
     bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
     edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
     tile = true, tileSize = 32, edgeSize = 32,
     insets = { left=8, right=8, top=8, bottom=8 }
     })
+    -- Close-Button oben rechts
+    local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
+    close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4)
 
+    -- Schließen per X
+    close:SetScript("OnClick", function() frame:Hide() end)
 
     -- Text Header
     local line1 = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -44,6 +56,7 @@ local function BuildFrame()
     img:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
     img:SetTexCoord(0.1, 0.9, 0.1, 0.9) 
 
+--#region Dropdown
     -- Dropdown erstellen
     local dd = CreateFrame("Frame", "MyAddonDropDown", frame, "UIDropDownMenuTemplate")
     dd:SetPoint("CENTER", line2, 0, -40)
@@ -53,6 +66,8 @@ local function BuildFrame()
         {text = "Willywerkel", value = "Willywerkel"},
         {text = "Hexherr", value = "Hexherr"},
         {text = "Herrow", value ="Herrow"},
+        {text = "Brauner", value ="Brauner"},
+        
     }
 
     -- Auswahl-Handler
@@ -93,7 +108,7 @@ local function BuildFrame()
             print("Jetzt ist Sie keine Hure")
         end
     end)
-
+--#endregion
 
     -- Button
     local btn1 = CreateFrame("Button", "Btn1", frame, "UIPanelButtonTemplate")
@@ -109,16 +124,21 @@ local function BuildFrame()
     local f = CreateFrame("Frame")
     f:RegisterEvent("CHAT_MSG_ADDON")
     f:SetScript("OnEvent", function(_, _, prefix, msg, channel, sender)
+        -- early out
         if prefix ~= PREFIX then return end
+
         if msg == "DEBUG:Hello" then
             print("Empfangen von "..sender..": "..msg)
+            -- PlaySoundFile("Interface\\AddOns\\NBM\\sounds\\ding.ogg")
+            PlaySoundFile("Interface\\AddOns\\NBM\\sounds\\header.wav", "Ambience")
             end
         end)
 
 
     frame:Hide() -- erst per Slash zeigen
 
-end
+    end
+
 
 -- Nach Login initialisieren und Slash registrieren
 local evt = CreateFrame("Frame")
@@ -127,26 +147,64 @@ evt:SetScript("OnEvent", function()
   BuildFrame()
   Print("geladen. Slash: /nbm show oder /nbm hide")
 
-  -- /nbm commands
 
-SLASH_NBM1 = "/nbm"
-SlashCmdList["NBM"] = function(msg)
-    msg = string.lower(msg or "")
-    if msg == "show" then
-        frame:Show()
-    
-    elseif msg == "hide" then
-        frame:Hide()
+--#region Minimapbutton
+    -- === Minimap-Button sichtbar und zentriert ===
+    local mbtn = CreateFrame("Button", "NBM_MinimapButton", Minimap)
+    mbtn:SetSize(32, 32)
+    mbtn:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 8, -8)
+    mbtn:SetFrameStrata("MEDIUM")
+    mbtn:SetFrameLevel(Minimap:GetFrameLevel() + 5)
+    mbtn:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
 
-    elseif msg == "toggle" then
-        if frame:IsShown() 
-            then frame:Hide() 
-        else frame:Show() 
+    -- Icon 20x20 zentriert
+    local icon = mbtn:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(20, 20)
+    icon:SetPoint("CENTER")
+    -- Bild ODER Farbe:
+    -- icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
+    icon:SetTexture(0.6, 0.2, 0.4, 1)
+
+    -- Border-Ring (immer Center, 56x56)
+    local border = mbtn:CreateTexture(nil, "OVERLAY")
+    border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+    border:SetPoint("TOPLEFT")
+    border:SetSize(56, 56)
+
+    mbtn:SetScript("OnClick", function()
+    if frame and frame.Show then frame:Show() end
+    end)
+    mbtn:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+    GameTooltip:AddLine("NBM öffnen")
+    GameTooltip:Show()
+    end)
+    mbtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    -- === Ende ===
+--#endregion
+
+--#region Commands
+
+    SLASH_NBM1 = "/nbm"
+    SlashCmdList["NBM"] = function(msg)
+        msg = string.lower(msg or "")
+        if msg == "show" then
+            frame:Show()
+        
+        elseif msg == "hide" then
+            frame:Hide()
+
+        elseif msg == "toggle" then
+            if frame:IsShown() 
+                then frame:Hide() 
+            else frame:Show() 
+            end
+        
+        else
+        DEFAULT_CHAT_FRAME:AddMessage("|cff00ff96NBM:|r benutze /nbm show, /nbm hide oder /nbm toggle")
         end
-    
-    else
-      DEFAULT_CHAT_FRAME:AddMessage("|cff00ff96NBM:|r benutze /nbm show, /nbm hide oder /nbm toggle")
-    end
 
-    end
-end)
+        end
+    end)
+
+--#endregion
