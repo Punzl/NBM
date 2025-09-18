@@ -2,5 +2,9 @@
 ## Title: Naga Bums Mich
 ## Notes: Naga Bums Mich Gilden Addon
 ## Version: 0.1
+## SavedVariables: NBM_Saved
 
-nbm.lua
+Core.lua
+MinimapButton.lua
+Soundboard.lua
+Options.lua
