@@ -125,7 +125,7 @@ local function BuildFrame()
     {text = "Houuaa", value = "houa"},
     {text = "Ku Ku Ku", value = "kuku"},
     {text = "Pumpen 1", value = "pump1"},
-    {text = "Pumpen 2", value = "pump"},
+    {text = "Pumpen 2", value = "pump2"},
     }
 
     local dd_sound = CreateSimpleDropdown(
