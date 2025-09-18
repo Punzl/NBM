@@ -105,7 +105,10 @@ local function BuildFrame()
     {text = "Guild", value = "Guild"},
     {text = "Willywerkel", value = "Willywerkel"},
     {text = "Hexherr", value = "Hexherr"},
+    {text = "Penetraetor", value = "Penetraetor"},
     {text = "Herrow", value = "Herrow"},
+    {text = "Zapfhahn", value = "Zapfhahn"},
+
     }
 
     local dd_receiver = CreateSimpleDropdown(
@@ -116,10 +119,13 @@ local function BuildFrame()
 
     -- Sound-Dropdown unter dem Receiver
     local list_sounds = {
-    {text = "Header", value = "header"},
-    {text = "Ding",   value = "ding"},
-    {text = "Awooga", value = "awooga"},
-    {text = "Sound4", value = "sound4"},
+    {text = "Buff Mich", value = "buff"},
+    {text = "Heil Mich",   value = "heil"},
+    {text = "Hauueue", value = "haue"},
+    {text = "Houuaa", value = "houa"},
+    {text = "Ku Ku Ku", value = "kuku"},
+    {text = "Pumpen 1", value = "pump1"},
+    {text = "Pumpen 2", value = "pump"},
     }
 
     local dd_sound = CreateSimpleDropdown(
