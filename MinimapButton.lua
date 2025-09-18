@@ -9,7 +9,7 @@ local function CreateMinimapButton()
   local icon = btn:CreateTexture(nil, "ARTWORK")
   icon:SetSize(18, 20)
   icon:SetPoint("CENTER")
-  icon:SetTexture("Interface\\AddOns\\NBM\\img\\nbm_icon.tga")
+  icon:SetTexture("Interface\\AddOns\\NBM\\img\\icon.tga")
 
   -- Border
   local border = btn:CreateTexture(nil, "OVERLAY")
