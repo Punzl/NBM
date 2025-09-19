@@ -8,3 +8,6 @@ Core.lua
 MinimapButton.lua
 Soundboard.lua
 Options.lua
+Tabs\Board.lua
+Tabs\Config.lua
+Tabs\AllSounds.lua
